@@ -4,6 +4,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Connection, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class UserService {
@@ -11,6 +13,8 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private readonly connection: Connection,
+    private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
