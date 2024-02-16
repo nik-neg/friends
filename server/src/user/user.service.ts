@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
+import { omit } from 'lodash';
 
 @Injectable()
 export class UserService {
@@ -25,7 +26,15 @@ export class UserService {
       await queryRunner.connect();
       await queryRunner.startTransaction();
 
-      let user = this.userRepository.create(createUserDto);
+
+      const { data } = await this.httpService.post('https://reqres.in/api/users', {
+        ...omit(createUserDto, 'password'),
+        avatar: `https://reqres.in/img/faces/${Math.random() * 1000}-image.jpg`,
+
+      }).toPromise();
+
+      const newDto = new CreateUserDto({ ...data, password: createUserDto.password });
+      let user: User = this.userRepository.create(newDto);
 
       user = await queryRunner.manager.save(user);
       await queryRunner.commitTransaction();
@@ -41,9 +50,15 @@ export class UserService {
     }
   }
 
-  async findAll() {
-    return this.userRepository.find({
+  async findAll(query) {
+
+    const take = query.take || 10;
+    const skip = query.skip || 0;
+
+    return this.userRepository.findAndCount({
       select: ['id', 'email', 'first_name', 'last_name', 'avatar'],
+      take,
+      skip,
     });
   }
 
