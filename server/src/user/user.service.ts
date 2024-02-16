@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Connection, Repository } from 'typeorm';
@@ -45,6 +45,10 @@ export class UserService {
 
   async findOneByEmailAndPassword(email: string, password: string) {
     return this.userRepository.findOne({ where: { email, password } });
+  }
+
+  async getByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email } });
   }
 
   async findOne(id: number) {
