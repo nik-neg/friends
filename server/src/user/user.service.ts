@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -94,10 +94,16 @@ export class UserService {
       await queryRunner.connect();
       await queryRunner.startTransaction();
 
-      const res = this.userRepository.update(id, updateUserDto);
+      const user = await this.userRepository.findOne({ where: { id } });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      const updatedUser = await this.userRepository.save({ ...user, ...updateUserDto });
 
       await queryRunner.commitTransaction();
-      return res;
+      return updatedUser;
 
     } catch (err) {
       console.log(err);
