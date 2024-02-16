@@ -9,28 +9,29 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>, // private readonly connection: Connection,
+    private userRepository: Repository<User>,
+    private readonly connection: Connection,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    // const queryRunner = this.connection.createQueryRunner();
+    const queryRunner = this.connection.createQueryRunner();
 
     try {
-      // await queryRunner.connect();
-      // await queryRunner.startTransaction();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
 
       let user = this.userRepository.create(createUserDto);
 
-      // user = await queryRunner.manager.save(user);
-      // await queryRunner.commitTransaction();
+      user = await queryRunner.manager.save(user);
+      await queryRunner.commitTransaction();
 
       console.log({ user });
       return user;
     } catch (err) {
       console.log({ err });
-      // await queryRunner.rollbackTransaction();
+      await queryRunner.rollbackTransaction();
     } finally {
-      // await queryRunner.release();
+      await queryRunner.release();
     }
   }
 
