@@ -6,9 +6,6 @@ export class LoggerMiddleware implements NestMiddleware {
 
   private logger = new Logger('HTTP');
 
-  constructor() {
-  }
-
   use(req: Request, res: Response, next: NextFunction) {
     const { method, originalUrl } = req;
     this.logger.debug(`Request: ${method} ${originalUrl}`);

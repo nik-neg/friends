@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { RegisterDto } from './dto/RegisterDto.dto';
@@ -9,6 +9,8 @@ import { CreateUserDto } from '../user/dto/CreateUserDto.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
@@ -51,6 +53,9 @@ export class AuthService {
       };
 
     } catch (error) {
+
+      this.logger.error(error);
+
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException(
           'User with that email already exists',
@@ -71,6 +76,9 @@ export class AuthService {
       user.password = undefined;
       return user;
     } catch (error) {
+      
+      this.logger.error(error);
+
       throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
     }
   }

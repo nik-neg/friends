@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,6 +10,8 @@ import { UpdateUserDto } from './dto/UpdateUserDto.dto';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -44,7 +46,7 @@ export class UserService {
       return omit(user, 'password') as User;
 
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
 
       await queryRunner.rollbackTransaction();
     } finally {
@@ -59,32 +61,44 @@ export class UserService {
     const shouldFetchUsersFromApi = query.shouldFetchUsersFromApi || false;
     const page = query.page || 1;
 
-    if (shouldFetchUsersFromApi) {
-      const USER_SERVICE_API_URL = this.configService.get('USER_SERVICE_API_URL');
+    try {
+      if (shouldFetchUsersFromApi) {
+        const USER_SERVICE_API_URL = this.configService.get('USER_SERVICE_API_URL');
 
-      const { data } = await this.httpService.get(USER_SERVICE_API_URL, {
-        params: {
-          page,
-        },
-      }).toPromise();
+        const { data } = await this.httpService.get(USER_SERVICE_API_URL, {
+          params: {
+            page,
+          },
+        }).toPromise();
 
-      return data;
+        return data;
+      }
+
+      const [users, count] = await this.userRepository.findAndCount({
+        select: ['id', 'email', 'first_name', 'last_name', 'avatar'],
+        take,
+        skip,
+      });
+      return { users, count };
+    } catch (err) {
+      this.logger.error(err);
     }
-
-    const [users, count] = await this.userRepository.findAndCount({
-      select: ['id', 'email', 'first_name', 'last_name', 'avatar'],
-      take,
-      skip,
-    });
-    return { users, count };
   }
 
   async getByEmail(email: string) {
-    return this.userRepository.findOne({ where: { email } });
+    try {
+      return await this.userRepository.findOne({ where: { email } });
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async findOne(id: number) {
-    return this.userRepository.findOne({ where: { id } });
+    try {
+      return await this.userRepository.findOne({ where: { id } });
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -106,7 +120,7 @@ export class UserService {
       return updatedUser;
 
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
 
       await queryRunner.rollbackTransaction();
     } finally {
@@ -127,7 +141,7 @@ export class UserService {
       return res;
 
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
 
       await queryRunner.rollbackTransaction();
     } finally {
