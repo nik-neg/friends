@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { RegisterDto } from './dto/RegisterDto.dto';
@@ -20,13 +20,8 @@ export class AuthService {
 
     const { email, password: pass } = loginDto;
 
-    const user = await this.userService.findOneByEmailAndPassword(
-      email,
-      pass,
-    );
-    if (user?.password !== pass) {
-      throw new UnauthorizedException();
-    }
+    const user = await this.getAuthenticatedUser(email, pass);
+
     const payload = {
       sub: user.id,
       username: `${user.first_name} ${user.last_name}`,
@@ -59,26 +54,24 @@ export class AuthService {
     }
   }
 
-  public async getAuthenticatedUser(email: string, hashedPassword: string) {
+  public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     try {
       const user = await this.userService.getByEmail(email);
-      const isPasswordMatching = await bcrypt.compare(
-        hashedPassword,
-        user.password,
-      );
-      if (!isPasswordMatching) {
-        throw new HttpException(
-          'Wrong credentials provided',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      await this.verifyPassword(plainTextPassword, user.password);
       user.password = undefined;
       return user;
     } catch (error) {
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private async verifyPassword(plainTextPassword: string, hashedPassword: string) {
+    const isPasswordMatching = await bcrypt.compare(
+      plainTextPassword,
+      hashedPassword,
+    );
+    if (!isPasswordMatching) {
+      throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
     }
   }
 }
