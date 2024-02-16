@@ -41,7 +41,7 @@ export class UserService {
       user = await queryRunner.manager.save(user);
       await queryRunner.commitTransaction();
 
-      return user;
+      return omit(user, 'password');
 
     } catch (err) {
       console.log(err);
