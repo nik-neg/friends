@@ -24,7 +24,7 @@ export class AuthService {
     const user = await this.getAuthenticatedUser(email, pass);
 
     const payload = {
-      sub: user.id,
+      id: user.id,
       username: `${user.first_name} ${user.last_name}`,
     };
     return {
@@ -42,7 +42,7 @@ export class AuthService {
       const createdUser = await this.userService.create(newDto);
 
       const payload = {
-        sub: createdUser.id,
+        id: createdUser.id,
         username: `${createdUser.first_name} ${createdUser.last_name}`,
       };
       return {
