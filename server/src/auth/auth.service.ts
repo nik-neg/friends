@@ -1,28 +1,27 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { RegisterDto } from './dto/RegisterDto.dto';
 import * as bcrypt from 'bcrypt';
 import { PostgresErrorCode, SALT_ROUNDS } from './consts';
+import { LoginDto } from './dto/LoginDto.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) {
+  }
 
   async signIn(
-    username: string,
-    pass: string,
+    loginDto: LoginDto,
   ): Promise<{ access_token: string }> {
+
+    const { email, password: pass } = loginDto;
+
     const user = await this.userService.findOneByEmailAndPassword(
-      username,
+      email,
       pass,
     );
     if (user?.password !== pass) {
