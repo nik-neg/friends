@@ -19,4 +19,7 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({ default: false }) // can be set manually in the database, or later via backoffice
+  isAdmin: boolean;
 }

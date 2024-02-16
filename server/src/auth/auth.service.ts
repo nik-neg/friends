@@ -41,12 +41,9 @@ export class AuthService {
       });
       const createdUser = await this.userService.create(newDto);
 
-      const { email, password: pass } = registerDto;
-      const user = await this.getAuthenticatedUser(email, pass);
-
       const payload = {
-        sub: user.id,
-        username: `${user.first_name} ${user.last_name}`,
+        sub: createdUser.id,
+        username: `${createdUser.first_name} ${createdUser.last_name}`,
       };
       return {
         ...createdUser,
