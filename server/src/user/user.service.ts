@@ -57,11 +57,12 @@ export class UserService {
     const take = query.take || 10;
     const skip = query.skip || 0;
 
-    return this.userRepository.findAndCount({
+    const [users, count] = await this.userRepository.findAndCount({
       select: ['id', 'email', 'first_name', 'last_name', 'avatar'],
       take,
       skip,
     });
+    return { users, count };
   }
 
   async getByEmail(email: string) {
