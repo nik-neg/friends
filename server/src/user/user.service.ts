@@ -27,7 +27,9 @@ export class UserService {
       await queryRunner.startTransaction();
 
 
-      const { data } = await this.httpService.post('https://reqres.in/api/users', {
+      const USER_SERVICE_URL = this.configService.get('USER_SERVICE_URL');
+
+      const { data } = await this.httpService.post(USER_SERVICE_URL, {
         ...omit(createUserDto, 'password'),
         avatar: `https://reqres.in/img/faces/${Math.random() * 1000}-image.jpg`,
 
