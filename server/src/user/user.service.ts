@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Connection, Repository } from 'typeorm';
@@ -15,7 +15,8 @@ export class UserService {
     private readonly connection: Connection,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
-  ) {}
+  ) {
+  }
 
   async create(createUserDto: CreateUserDto) {
     const queryRunner = this.connection.createQueryRunner();
@@ -40,11 +41,13 @@ export class UserService {
   }
 
   async findAll() {
-    return this.userRepository.find();
+    return this.userRepository.find({
+      select: ['id', 'email', 'first_name', 'last_name', 'avatar'],
+    });
   }
 
-  async findOneByEmailAndPassword(email: string, password: string) {
-    return this.userRepository.findOne({ where: { email, password } });
+  async getByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email } });
   }
 
   async findOne(id: number) {
