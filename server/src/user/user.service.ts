@@ -41,7 +41,9 @@ export class UserService {
   }
 
   async findAll() {
-    return this.userRepository.find();
+    return this.userRepository.find({
+      select: ['id', 'email', 'first_name', 'last_name', 'avatar'],
+    });
   }
 
   async getByEmail(email: string) {
