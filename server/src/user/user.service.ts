@@ -30,10 +30,11 @@ export class UserService {
       user = await queryRunner.manager.save(user);
       await queryRunner.commitTransaction();
 
-      console.log({ user });
       return user;
+
     } catch (err) {
-      console.log({ err });
+      console.log(err);
+
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
@@ -55,10 +56,44 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateUserDto);
+    const queryRunner = this.connection.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      const res = this.userRepository.update(id, updateUserDto);
+
+      await queryRunner.commitTransaction();
+      return res;
+
+    } catch (err) {
+      console.log(err);
+
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+
   }
 
   async remove(id: number) {
-    return this.userRepository.delete(id);
+    const queryRunner = this.connection.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      const res = this.userRepository.delete(id);
+      await queryRunner.commitTransaction();
+      return res;
+
+    } catch (err) {
+      console.log(err);
+
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
