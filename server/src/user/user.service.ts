@@ -56,6 +56,20 @@ export class UserService {
 
     const take = query.take || 10;
     const skip = query.skip || 0;
+    const shouldFetchUsersFromApi = query.shouldFetchUsersFromApi || false;
+    const page = query.page || 1;
+
+    if (shouldFetchUsersFromApi) {
+      const USER_SERVICE_API_URL = this.configService.get('USER_SERVICE_API_URL');
+
+      const { data } = await this.httpService.get(USER_SERVICE_API_URL, {
+        params: {
+          page,
+        },
+      }).toPromise();
+
+      return data;
+    }
 
     const [users, count] = await this.userRepository.findAndCount({
       select: ['id', 'email', 'first_name', 'last_name', 'avatar'],
