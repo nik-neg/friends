@@ -1,35 +1,45 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constants';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { InjectDataSource, TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
+import { User } from './user/entities/user.entity';
+import { DataSource } from 'typeorm';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
+    // DatabaseModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
       port: 5432,
       username: 'postgres',
       password: 'postgres', // TODO: config service
-      database: 'postgres',
+      database: 'user_db',
       autoLoadEntities: true,
       synchronize: true,
-      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
+      entities: ['src/entities/*{.js,.ts}'],
     }),
-    JwtModule.register({
-      global: true,
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
-    }),
+    // JwtModule.register({
+    //   global: true,
+    //   secret: jwtConstants.secret,
+    //   signOptions: { expiresIn: '60s' },
+    // }),
     UserModule,
     AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  // constructor(
+  //   @InjectDataSource('DATA_SOURCE')
+  //   private dataSource: DataSource,
+  // ) {
+  //   // console.log('AppModule.constructor()');
+  //   // console.log('dataSource:', dataSource);
+  // }
+}
