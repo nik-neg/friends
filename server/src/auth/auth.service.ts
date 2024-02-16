@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { SALT_ROUNDS } from './consts';
 import { LoginDto } from './dto/LoginDto.dto';
 import { CreateUserDto } from '../user/dto/CreateUserDto.dto';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,7 @@ export class AuthService {
 
   async signIn(
     loginDto: LoginDto,
-  ): Promise<{ access_token: string }> {
+  ): Promise<User & { access_token: string }> {
 
     const { email, password: pass } = loginDto;
 
@@ -30,6 +31,7 @@ export class AuthService {
       username: `${user.first_name} ${user.last_name}`,
     };
     return {
+      ...user,
       access_token: await this.jwtService.signAsync(payload),
     };
   }
@@ -51,7 +53,7 @@ export class AuthService {
       ...createdUser,
       access_token: await this.jwtService.signAsync(payload),
     };
-    
+
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
