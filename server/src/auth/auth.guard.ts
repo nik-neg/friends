@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { UserService } from '../user/user.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(private jwtService: JwtService, private readonly userService: UserService) {
   }
 

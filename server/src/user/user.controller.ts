@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { GetUserDto } from './dto/GetUsersDto.dto';
 import { CreateUserDto } from './dto/CreateUserDto.dto';
 import { UpdateUserDto } from './dto/UpdateUserDto.dto';
-import { AuthGuard } from '../auth/auth.guard';
+import { AdminGuard } from '../auth/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -30,7 +30,7 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
