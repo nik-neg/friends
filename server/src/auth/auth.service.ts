@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { RegisterDto } from './dto/RegisterDto.dto';
 import * as bcrypt from 'bcrypt';
-import { PostgresErrorCode, SALT_ROUNDS } from './consts';
+import { SALT_ROUNDS } from './consts';
 import { LoginDto } from './dto/LoginDto.dto';
 import { CreateUserDto } from '../user/dto/CreateUserDto.dto';
 
@@ -36,37 +36,22 @@ export class AuthService {
 
   async register(registerDto: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registerDto.password, SALT_ROUNDS);
-    try {
-      const newDto = new CreateUserDto({
-        ...registerDto,
-        password: hashedPassword,
-      });
-      const createdUser = await this.userService.create(newDto);
 
-      const payload = {
-        id: createdUser.id,
-        username: `${createdUser.first_name} ${createdUser.last_name}`,
-      };
-      return {
-        ...createdUser,
-        access_token: await this.jwtService.signAsync(payload),
-      };
+    const newDto = new CreateUserDto({
+      ...registerDto,
+      password: hashedPassword,
+    });
+    const createdUser = await this.userService.create(newDto);
 
-    } catch (error) {
-
-      this.logger.error(error);
-
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException(
-          'User with that email already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    const payload = {
+      id: createdUser.id,
+      username: `${createdUser.first_name} ${createdUser.last_name}`,
+    };
+    return {
+      ...createdUser,
+      access_token: await this.jwtService.signAsync(payload),
+    };
+    
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
@@ -76,7 +61,7 @@ export class AuthService {
       user.password = undefined;
       return user;
     } catch (error) {
-      
+
       this.logger.error(error);
 
       throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);

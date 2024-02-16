@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,6 +22,11 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserDto) {
+    const user = await this.userRepository.findOne({ where: { email: createUserDto.email } });
+    if (user) {
+      throw new ConflictException('User with this email already exists');
+    }
+
     const queryRunner = this.connection.createQueryRunner();
 
     try {
@@ -38,6 +43,8 @@ export class UserService {
       }).toPromise();
 
       const newDto = new CreateUserDto({ ...data, password: createUserDto.password });
+
+
       let user: User = this.userRepository.create(newDto);
 
       user = await queryRunner.manager.save(user);
@@ -102,17 +109,17 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException(`User with ${id} not found`);
+    }
+
     const queryRunner = this.connection.createQueryRunner();
 
     try {
       await queryRunner.connect();
       await queryRunner.startTransaction();
-
-      const user = await this.userRepository.findOne({ where: { id } });
-
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
 
       const updatedUser = await this.userRepository.save({ ...user, ...updateUserDto });
 
