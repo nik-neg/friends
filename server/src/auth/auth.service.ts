@@ -38,8 +38,18 @@ export class AuthService {
         ...registerDto,
         password: hashedPassword,
       });
-      createdUser.password = undefined;
-      return createdUser;
+
+      const { email, password: pass } = registerDto;
+      const user = await this.getAuthenticatedUser(email, pass);
+
+      const payload = {
+        sub: user.id,
+        username: `${user.first_name} ${user.last_name}`,
+      };
+      return {
+        access_token: await this.jwtService.signAsync(payload),
+      };
+
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException(

@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const configService = app.get<ConfigService>(ConfigService);
-  
+
   const port = configService.get<number>('PORT');
 
   app.enableCors({
@@ -22,6 +22,7 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
 
   });
+  console.log(`Server is running on port ${port}`);
   await app.listen(port);
 }
 
