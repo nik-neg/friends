@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUserDto } from './dto/GetUsersDto.dto';
 import { CreateUserDto } from './dto/CreateUserDto.dto';
@@ -27,6 +38,10 @@ export class UserController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const { first_name, last_name } = updateUserDto;
+    if (!first_name && !last_name) {
+      throw new BadRequestException('At least one field should be provided');
+    }
     return this.userService.update(+id, updateUserDto);
   }
 
