@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { Connection, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { omit } from 'lodash';
+import { CreateUserDto } from './dto/CreateUserDto.dto';
+import { UpdateUserDto } from './dto/UpdateUserDto.dto';
 
 @Injectable()
 export class UserService {

@@ -5,6 +5,7 @@ import { RegisterDto } from './dto/RegisterDto.dto';
 import * as bcrypt from 'bcrypt';
 import { PostgresErrorCode, SALT_ROUNDS } from './consts';
 import { LoginDto } from './dto/LoginDto.dto';
+import { CreateUserDto } from '../user/dto/CreateUserDto.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,10 +35,11 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registerDto.password, SALT_ROUNDS);
     try {
-      const createdUser = await this.userService.create({
+      const newDto = new CreateUserDto({
         ...registerDto,
         password: hashedPassword,
       });
+      const createdUser = await this.userService.create(newDto);
 
       const { email, password: pass } = registerDto;
       const user = await this.getAuthenticatedUser(email, pass);
