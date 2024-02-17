@@ -23,7 +23,6 @@ async function bootstrap() {
       if (!origin || regex.test(origin) || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        console.log({ origin, test: regex.test(origin) });
         callback(new Error('Not allowed by CORS'));
       }
 
