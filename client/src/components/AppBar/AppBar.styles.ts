@@ -1,0 +1,18 @@
+import styled from "styled-components";
+
+export const SAppBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+`;
+
+export const SAppBarButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & > * {
+    margin: 0 5px;
+  }
+`;
