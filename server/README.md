@@ -7,7 +7,7 @@ DATABASE_USERNAME = postgres
 DATABASE_PASSWORD = postgres
 DATABASE = user_db
 JWT_EXPIRATION = 1800
-ALLOWED_ORIGIN = ["https://localhost:3000", "www.google.com", "https://wwww.facebook.com"]
+ALLOWED_ORIGINS = ["https://localhost:3000", "www.google.com", "https://wwww.facebook.com"]
 USER_SERVICE_API_URL = https://reqres.in/api/users
 ```
 

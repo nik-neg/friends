@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { SButton } from '../../common/Button';
 
-export const UserListContainer = styled.div`
+export const SUsersListContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -13,3 +14,9 @@ export const UserListContainer = styled.div`
         justify-content: center;
     }
 `;
+
+export const SUserListButton = styled(SButton)`
+    width: 100px;
+    height: 50px;
+`;
+

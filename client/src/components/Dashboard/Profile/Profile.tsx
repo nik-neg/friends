@@ -8,24 +8,49 @@ import {
   SUpdateButtonWrapper,
   SUserUpdateButton,
 } from './Profile.styles.ts';
-import { SProfileHeader } from '../../common/Text/Text.styles.ts';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 // @ts-ignore
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { updateUserSchema } from './validation/schema.ts';
+import { Input } from '../../Welcome';
+import { AppBar } from '../../AppBar';
+import { SProfileHeader } from '../../common/Text';
+import { useUser } from '../../../context';
 
 export const Profile = () => {
+  const { userData } = useUser();
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
-    // fetch user
+    setIsLoading(true);
+    if (userData?.id) {
+      fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          Authorization: `Bearer ${userData?.access_token}`,
+        },
+      }).then((res) => res.json())
+        .then(({ data }) => {
+          console.log({ data });
+          if (data?.length) {
+            setUser(data);
+
+            setIsLoading(false);
+          }
+        });
+    }
+
   }, []);
 
 
   const defaultValues = {
-    firstName: user.firstName,
-    lastName: user.lastName,
+    first_name: user?.first_name,
+    last_name: user?.last_name,
   };
 
   const {
@@ -40,9 +65,17 @@ export const Profile = () => {
 
   const [canUpdateUser, setUpdateUser] = useState(false);
   const handleUpdate = async () => {
-    console.log({ canUpdateUser, isValid, errors, user });
+    console.log({ canUpdateUser, isValid, errors, userData });
     if (canUpdateUser && isValid) {
-      
+      const res = await fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          Authorization: `Bearer ${userData?.access_token}`,
+        },
+        body: JSON.stringify(getValues()),
+      });
     }
   };
 
@@ -70,18 +103,18 @@ export const Profile = () => {
           <SInputWrapper gridArea={'firstName'}>
             <Input
               type="text"
-              id={'firstName'}
-              value={canUpdateUser ? undefined : user?.firstName}
-              {...register('firstName')}
+              id={'first_name'}
+              value={canUpdateUser ? undefined : userData?.first_name}
+              {...register('first_name')}
               style={{ pointerEvents: canUpdateUser ? 'auto' : 'none' }}
             />
           </SInputWrapper>
           <SInputWrapper gridArea={'lastName'}>
             <Input
               type="text"
-              id={'lastName'}
-              value={canUpdateUser ? undefined : user?.lastName}
-              {...register('lastName')}
+              id={'last_name'}
+              value={canUpdateUser ? undefined : userData?.last_name}
+              {...register('last_name')}
               style={{ pointerEvents: canUpdateUser ? 'auto' : 'none' }}
             />
           </SInputWrapper>
@@ -89,7 +122,7 @@ export const Profile = () => {
             <Input
               type="text"
               id={'firstName'}
-              value={user?.email}
+              value={userData?.email}
               style={{ pointerEvents: 'none' }}
             />
           </SInputWrapper>

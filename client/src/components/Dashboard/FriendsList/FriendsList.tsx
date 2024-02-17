@@ -1,56 +1,30 @@
-import {
-  FriendsListContainer,
-  SCheckoutColumnWrapper,
-  SCheckOutContainer,
-  SFriendsListButton,
-} from './FriendsList.styles.ts';
-import { User } from '../common/User/User.tsx';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { AppBar } from '../../AppBar';
+import { User } from '../common/User';
+import { FriendsListContainer } from './FriendsList.styles.ts';
 
 export const FriendsList = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') ?? '');
-  }, []);
-
+  const [friendsList, setFriendsList] = useState<[]>([]);
 
   useEffect(() => {
-
   }, []);
-
-  const [friendsList, setCartList] = useState<[]>([]);
-
-
-  const handleCheckout = async () => {
-
-  };
 
   return (
     <>
       <AppBar />
       <FriendsListContainer>
-        {[1, 2, 3].map(
-          (item: any, index: number) => {
-            return (
-              <User
-                key={index}
-                _id={item._id}
-                userId={item.userId}
-                catalogImage={item.catalogImage}
-                description={item.description}
-                price={item.price}
-                quantity={item.volume}
-              />
-            );
-          },
-        )}
+        {[1, 2, 3].map((user, index) => {
+          return (
+            <User
+              key={index}
+              userId={user.userId}
+              friendImage={user.avatar}
+              name={user.first_name + ' ' + user.last_name}
+              email={user.email}
+            />
+          );
+        })}
       </FriendsListContainer>
-      <SCheckOutContainer>
-        <SCheckoutColumnWrapper>
-          <SFriendsListButton onClick={handleCheckout}>Checkout</SFriendsListButton>
-        </SCheckoutColumnWrapper>
-      </SCheckOutContainer>
     </>
   );
 };

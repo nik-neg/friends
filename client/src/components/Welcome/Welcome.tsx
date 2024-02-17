@@ -7,17 +7,20 @@ import { useForm } from 'react-hook-form';
 import { IWelcome } from './types.ts';
 import { loginSchema, registerSchema } from './validation/schema.ts';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../context';
+import { HttpStatusCode } from 'axios';
 
 export const Welcome = () => {
+
+  const { handleLoggedIn, handleAuthenticated, updateUser, userData } = useUser();
 
   const [isRegistered, setIsRegistered] = useState(false);
 
   const navigate = useNavigate();
 
-
   const defaultValues: IWelcome = {
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
   };
@@ -33,18 +36,37 @@ export const Welcome = () => {
   });
 
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: Event) => {
+    e.stopPropagation();
+
     if (isValid) {
       try {
-        let userData;
+        let url;
         if (isRegistered) {
-
+          url = import.meta.env.VITE_SERVER_URL_LOGIN;
         } else {
-
+          url = import.meta.env.VITE_SERVER_URL_REGISTER;
         }
-        localStorage.setItem('user', JSON.stringify(userData));
 
-        navigate('/menu');
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(getValues()),
+        });
+
+        if (res.status === HttpStatusCode.Created || res.status === HttpStatusCode.Ok) {
+          const data = await res.json();
+          updateUser(data);
+          localStorage.setItem('userData', JSON.stringify(data));
+          if (data?.access_token) {
+            handleAuthenticated(true);
+            navigate('/friends');
+          }
+        }
+
       } catch (error) {
         console.log({ error });
       }
@@ -60,8 +82,8 @@ export const Welcome = () => {
               <Input
                 type="text"
                 placeholder="FirstName"
-                id={'firstName'}
-                {...register('firstName')}
+                id={'first_name'}
+                {...register('first_name')}
               />
               {errors.firstName && (
                 <SWarningSpan>{errors.firstName.message}</SWarningSpan>
@@ -69,8 +91,8 @@ export const Welcome = () => {
               <Input
                 type="text"
                 placeholder="LastName"
-                id={'lastName'}
-                {...register('lastName')}
+                id={'last_name'}
+                {...register('last_name')}
               />
               {errors.lastName && (
                 <SWarningSpan>{errors.lastName.message}</SWarningSpan>

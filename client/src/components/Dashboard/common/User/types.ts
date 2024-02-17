@@ -1,11 +1,7 @@
 export interface UserProps {
-  _id: string;
-  description: string;
-  price: number;
-  catalogImage: string;
-  isMenuItem?: boolean;
-  quantity?: number;
+  name: string;
+  friendImage: string;
+  isFriend?: boolean;
   userId?: string;
-  volume?: number;
-  category?: string;
+  email?: string;
 }

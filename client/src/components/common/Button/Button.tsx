@@ -5,11 +5,10 @@ import { useNavigate } from 'react-router-dom';
 export const Button = ({ name }: IButtonProps) => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const handleClick = (event: Event) => {
+    event.stopPropagation();
+    
     const route = name === 'logout' ? '' : name?.toLowerCase();
-    if (name === 'logout') {
-      localStorage.removeItem('user');
-    }
     navigate(`/${route}`);
   };
 

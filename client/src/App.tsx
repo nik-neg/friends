@@ -2,24 +2,26 @@ import './App.styles.ts';
 import { SApp } from './App.styles.ts';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Welcome } from './components/Welcome';
-import { UserList } from './components/Dashboard/UserList';
-import { FriendsList } from './components/Dashboard/FriendsList';
 import { Profile } from './components/Dashboard/Profile';
+import { useUser } from './context';
+import { FriendsList } from './components/Dashboard/FriendsList/FriendsList.tsx';
+import { UsersList } from './components/Dashboard/UsersList/UsersList.tsx';
 
 function App() {
 
-  const isAuthenticated = true;
+  const { isAuthenticated } = useUser();
+
   return (
     <SApp>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route
-            path="/menu"
-            element={isAuthenticated ? <UserList /> : <Navigate to="/" replace />}
+            path="/users"
+            element={isAuthenticated ? <UsersList /> : <Navigate to="/" replace />}
           />
           <Route
-            path="/cart"
+            path="/friends"
             element={isAuthenticated ? <FriendsList /> : <Navigate to="/" replace />}
           />
           <Route
