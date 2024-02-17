@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { HttpService } from '@nestjs/axios';
 import { omit } from 'lodash';
 import { CreateUserDto } from './dto/CreateUserDto.dto';
 import { UpdateUserDto } from './dto/UpdateUserDto.dto';
+import { FriendService } from '../friend/friend.service';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,8 @@ export class UserService {
     private readonly connection: Connection,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
+    @Inject(forwardRef(() => FriendService))
+    private readonly friendService: FriendService,
   ) {
   }
 
@@ -102,7 +105,13 @@ export class UserService {
 
   async findOne(id: number) {
     try {
-      return await this.userRepository.findOne({ where: { id }, relations: ['friends'] });
+      // return await this.userRepository.findOne({ where: { id }, relations: ['friends'] });
+      return this.userRepository
+        .createQueryBuilder('user')
+        .where('user.id = :id', { id })
+        .leftJoinAndSelect('user.friends', 'friends')
+        .getOne();
+
     } catch (err) {
       this.logger.error(err);
     }
@@ -134,6 +143,16 @@ export class UserService {
       await queryRunner.release();
     }
 
+  }
+
+  async addFriend(userId: number, friendId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['friends'] });
+    const friend = await this.friendService.findOne(friendId);
+
+    if (user && friend) {
+      user.friends.push(friend);
+      await this.userRepository.save(user);
+    }
   }
 
   async remove(id: number) {

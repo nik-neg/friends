@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateFriendDto } from './dto/create-friend.dto';
 import { omit } from 'lodash';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,6 +13,7 @@ export class FriendService {
 
   constructor(
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
+    @Inject(forwardRef(() => UserService))
     private userService: UserService,
     private readonly connection: Connection) {
   }
@@ -25,10 +26,12 @@ export class FriendService {
       await queryRunner.startTransaction();
 
 
-      let friend = this.friendRepository.create(omit(createFriendDto, 'userId'));
+      let friend = this.friendRepository.create({ ...omit(createFriendDto, 'userId'), users: [] });
       const user = await this.userService.findOne(createFriendDto.userId);
       friend.users.push(user);
       await this.friendRepository.save(friend);
+
+      this.userService.addFriend(user.id, friend.id);
 
       friend = await queryRunner.manager.save(friend);
       await queryRunner.commitTransaction();
@@ -42,6 +45,10 @@ export class FriendService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async findOne(id: number) {
+    return this.friendRepository.findOne({ where: { id } });
   }
 
   async remove(id: number) {
