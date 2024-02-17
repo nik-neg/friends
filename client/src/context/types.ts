@@ -3,6 +3,7 @@ export interface UserProviderProps {
 }
 
 export interface IUserContext {
+  userData: IUser | null;
   isAuthenticated: boolean;
   isLoggedIn: boolean;
   handleLoggedIn: (value: boolean) => void;
@@ -15,4 +16,5 @@ export interface IUser {
   password: string;
   first_name: string;
   last_name: string;
+  token: string;
 }

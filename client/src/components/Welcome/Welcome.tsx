@@ -40,7 +40,6 @@ export const Welcome = () => {
 
     if (isValid) {
       try {
-        let userData;
         if (isRegistered) {
           fetch('http://localhost:3000/auth/login', {
             method: 'POST',
@@ -53,18 +52,18 @@ export const Welcome = () => {
             .then((response) => response.json())
             .then((data) => updateUser(data));
         } else {
-          fetch('http://localhost:3000/auth/register', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(getValues()),
-          })
-            .then((response) => response.json())
-            .then((data) => updateUser(data));
+          // fetch('http://localhost:3000/auth/register', {
+          //   method: 'POST',
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //     'Accept': 'application/json',
+          //   },
+          //   body: JSON.stringify(getValues()),
+          // })
+          //   .then((response) => response.json())
+          //   .then((data) => updateUser(data));
         }
-        
+
         navigate('/friends-list');
       } catch (error) {
         console.log({ error });

@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import { IUser, IUserContext, UserProviderProps } from './types.ts';
 
 const UserContext = createContext<IUserContext>({
+  userData: null,
   isLoggedIn: false,
   isAuthenticated: false,
   handleLoggedIn: () => {
@@ -14,17 +15,18 @@ const UserContext = createContext<IUserContext>({
 
 export const UserProvider = ({ children }: UserProviderProps) => {
 
-  const [user, setUser] = useState<IUser | null>(null);
+  const [userData, setUserData] = useState<IUser | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const handleLoggedIn = (value: boolean) => setIsLoggedIn(value);
   const handleAuthenticated = (value: boolean) => setIsAuthenticated(value);
-  const updateUser = (value: any) => setUser((prevState) => ({ ...prevState, ...value }));
+  const updateUser = (value: any) => setUserData((prevState) => ({ ...prevState, ...value }));
 
   return (
     <UserContext.Provider
       value={{
+        userData,
         isLoggedIn,
         isAuthenticated,
         handleLoggedIn,

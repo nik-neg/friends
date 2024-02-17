@@ -4,14 +4,12 @@ import {
   SCheckOutContainer,
   SFriendsListButton,
 } from './FriendsList.styles.ts';
-import { User } from '../common/User/User.tsx';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { AppBar } from '../../AppBar';
+import { User } from '../common/User';
 
 export const FriendsList = () => {
-  const dispatch = useDispatch();
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') ?? '');
   }, []);
 
 

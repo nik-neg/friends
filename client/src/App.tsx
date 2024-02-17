@@ -5,10 +5,12 @@ import { Welcome } from './components/Welcome';
 import { UserList } from './components/Dashboard/UserList';
 import { FriendsList } from './components/Dashboard/FriendsList';
 import { Profile } from './components/Dashboard/Profile';
+import { useUser } from './context';
 
 function App() {
 
-  const isAuthenticated = true;
+  const { isAuthenticated } = useUser();
+
   return (
     <SApp>
       <BrowserRouter>
@@ -16,11 +18,11 @@ function App() {
           <Route path="/" element={<Welcome />} />
           <Route
             path="/friends-list"
-            element={isAuthenticated ? <UserList /> : <Navigate to="/" replace />}
+            element={true ? <FriendsList /> : <Navigate to="/" replace />}
           />
           <Route
             path="/user-list"
-            element={isAuthenticated ? <FriendsList /> : <Navigate to="/" replace />}
+            element={isAuthenticated ? <UserList /> : <Navigate to="/" replace />}
           />
           <Route
             path="/profile"
