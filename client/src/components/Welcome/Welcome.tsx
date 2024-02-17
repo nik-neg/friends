@@ -11,7 +11,7 @@ import { useUser } from '../../context';
 
 export const Welcome = () => {
 
-  const { handleLoggedIn, handleAuthenticated, updateUser } = useUser();
+  const { handleLoggedIn, handleAuthenticated, updateUser, userData } = useUser();
 
   const [isRegistered, setIsRegistered] = useState(false);
 
@@ -40,31 +40,31 @@ export const Welcome = () => {
 
     if (isValid) {
       try {
+        let url;
         if (isRegistered) {
-          fetch('http://localhost:3000/auth/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(getValues()),
-          })
-            .then((response) => response.json())
-            .then((data) => updateUser(data));
+          url = 'http://localhost:3000/auth/login';
         } else {
-          // fetch('http://localhost:3000/auth/register', {
-          //   method: 'POST',
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //     'Accept': 'application/json',
-          //   },
-          //   body: JSON.stringify(getValues()),
-          // })
-          //   .then((response) => response.json())
-          //   .then((data) => updateUser(data));
+          url = 'http://localhost:3000/auth/register';
         }
 
-        navigate('/friends-list');
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(getValues()),
+        });
+
+        const data = await res.json();
+        updateUser(data);
+
+        if (data?.access_token) {
+          handleAuthenticated(true);
+        }
+
+
+        navigate('/friends');
       } catch (error) {
         console.log({ error });
       }

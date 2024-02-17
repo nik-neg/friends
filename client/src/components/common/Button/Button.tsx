@@ -7,9 +7,7 @@ export const Button = ({ name }: IButtonProps) => {
 
   const handleClick = () => {
     const route = name === 'logout' ? '' : name?.toLowerCase();
-    if (name === 'logout') {
-      localStorage.removeItem('user');
-    }
+    
     navigate(`/${route}`);
   };
 

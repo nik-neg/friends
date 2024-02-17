@@ -1,1 +1,1 @@
-export const appBarOptions = ["menu", "cart", "profile", "logout"];
+export const appBarOptions = ['friends', 'users', 'profile', 'logout'];

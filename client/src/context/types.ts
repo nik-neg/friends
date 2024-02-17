@@ -16,5 +16,5 @@ export interface IUser {
   password: string;
   first_name: string;
   last_name: string;
-  token: string;
+  access_token: string;
 }

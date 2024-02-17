@@ -29,16 +29,13 @@ export const FriendsList = () => {
       <AppBar />
       <FriendsListContainer>
         {[1, 2, 3].map(
-          (item: any, index: number) => {
+          (friend: any, index: number) => {
             return (
               <User
                 key={index}
-                _id={item._id}
-                userId={item.userId}
-                catalogImage={item.catalogImage}
-                description={item.description}
-                price={item.price}
-                quantity={item.volume}
+                userId={friend.userId}
+                friendImage={friend.avatar}
+                description={friend.description}
               />
             );
           },

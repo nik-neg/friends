@@ -11,7 +11,7 @@ import { UserProps } from './types.ts';
 
 export const User = ({
                        userId,
-                       catalogImage,
+                       friendImage,
                        description,
                        price,
                        isMenuItem,
@@ -24,7 +24,7 @@ export const User = ({
     <SNourishmentCard>
       <SImage
         src={
-          catalogImage ??
+          friendImage ??
           'https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=1600'
         }
       />

@@ -17,11 +17,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route
-            path="/friends-list"
-            element={true ? <FriendsList /> : <Navigate to="/" replace />}
+            path="/friends"
+            element={isAuthenticated ? <FriendsList /> : <Navigate to="/" replace />}
           />
           <Route
-            path="/user-list"
+            path="/user"
             element={isAuthenticated ? <UserList /> : <Navigate to="/" replace />}
           />
           <Route
