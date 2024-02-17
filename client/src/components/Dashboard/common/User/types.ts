@@ -1,7 +1,7 @@
 export interface UserProps {
   description: string;
   friendImage: string;
-  isMenuItem?: boolean;
+  isFriend?: boolean;
   userId?: string;
   category?: string;
 }

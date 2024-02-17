@@ -14,7 +14,7 @@ export const User = ({
                        friendImage,
                        description,
                        price,
-                       isMenuItem,
+                       isFriend,
                        quantity,
                      }: UserProps) => {
   const handleItem = () => {
@@ -37,7 +37,7 @@ export const User = ({
       </SDetailsContainer>
 
       <SItemButton onClick={handleItem}>
-        {isMenuItem ? 'Add to cart' : 'Remove from cart'}
+        {isFriend ? 'Add to list' : 'Remove from list'}
       </SItemButton>
     </SNourishmentCard>
   );

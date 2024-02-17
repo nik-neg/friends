@@ -25,8 +25,7 @@ export const UserList = () => {
               userId={user.userId}
               friendImage={user.avatar}
               description={user.description}
-              price={user.price}
-              isMenuItem
+              isFriend
             />
           );
         })}
