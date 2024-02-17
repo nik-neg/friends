@@ -21,6 +21,7 @@ export const FriendsList = () => {
               friendImage={user.avatar}
               name={user.first_name + ' ' + user.last_name}
               email={user.email}
+              isFriend
             />
           );
         })}

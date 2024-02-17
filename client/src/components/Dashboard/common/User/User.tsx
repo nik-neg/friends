@@ -25,6 +25,20 @@ export const User = ({
       });
     } else {
       // add
+      const res = fetch(`${import.meta.env.VITE_SERVER_URL_FRIEND}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          Authorization: `Bearer ${userData?.access_token}`,
+        },
+        body: JSON.stringify({
+          userId: userData?.id,
+          friendImage,
+          name,
+          email,
+        }),
+      });
     }
   };
 
@@ -40,7 +54,7 @@ export const User = ({
       <SEmail>{email}</SEmail>
 
       <SItemButton onClick={handleUser}>
-        {isFriend ? 'Add to list' : 'Remove from list'}
+        {!isFriend ? 'Add to list' : 'Remove from list'}
       </SItemButton>
     </SUserCard>
   );

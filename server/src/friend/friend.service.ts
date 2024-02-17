@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateFriendDto } from './dto/create-friend.dto';
-import { UpdateFriendDto } from './dto/update-friend.dto';
+import { omit } from 'lodash';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Connection, Repository } from 'typeorm';
+import { Friend } from './entities/friend.entity';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class FriendService {
-  create(createFriendDto: CreateFriendDto) {
-    return 'This action adds a new friend';
+
+  private readonly logger = new Logger(FriendService.name);
+
+  constructor(
+    @InjectRepository(Friend) private friendRepository: Repository<Friend>,
+    private userService: UserService,
+    private readonly connection: Connection) {
   }
 
-  findAll() {
-    return `This action returns all friend`;
+  async create(createFriendDto: CreateFriendDto) {
+    const queryRunner = this.connection.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+
+      let friend = this.friendRepository.create(omit(createFriendDto, 'userId'));
+      friend.user = await this.userService.findOne(createFriendDto.userId);
+      await this.friendRepository.save(friend);
+
+      friend = await queryRunner.manager.save(friend);
+      await queryRunner.commitTransaction();
+
+      return omit(friend, 'password') as Friend;
+
+    } catch (err) {
+      this.logger.error(err);
+
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} friend`;
-  }
-
-  update(id: number, updateFriendDto: UpdateFriendDto) {
-    return `This action updates a #${id} friend`;
-  }
-
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} friend`;
   }
 }
