@@ -1,3 +1,5 @@
-# userfy
+# friends
 
-use for both node 16
+```text
+This is a simple friends list application
+```

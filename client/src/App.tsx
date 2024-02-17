@@ -6,14 +6,16 @@ import { Profile } from './components/Dashboard/Profile';
 import { useUser } from './context';
 import { FriendsList } from './components/Dashboard/FriendsList/FriendsList.tsx';
 import { UsersList } from './components/Dashboard/UsersList/UsersList.tsx';
+import { AppBar } from './components/AppBar';
 
 function App() {
 
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, isLoggedIn } = useUser();
 
   return (
     <SApp>
       <BrowserRouter>
+        {isAuthenticated && <AppBar />}
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route

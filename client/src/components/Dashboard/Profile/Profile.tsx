@@ -14,18 +14,15 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { updateUserSchema } from './validation/schema.ts';
 import { Input } from '../../Welcome';
-import { AppBar } from '../../AppBar';
 import { SProfileHeader } from '../../common/Text';
 import { useUser } from '../../../context';
 
 export const Profile = () => {
   const { userData } = useUser();
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
-    setIsLoading(true);
     if (userData?.id) {
       fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
         method: 'GET',
@@ -39,8 +36,6 @@ export const Profile = () => {
           console.log({ data });
           if (data?.length) {
             setUser(data);
-
-            setIsLoading(false);
           }
         });
     }
@@ -65,7 +60,6 @@ export const Profile = () => {
 
   const [canUpdateUser, setUpdateUser] = useState(false);
   const handleUpdate = async () => {
-    console.log({ canUpdateUser, isValid, errors, userData });
     if (canUpdateUser && isValid) {
       const res = await fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
         method: 'PATCH',
@@ -83,11 +77,8 @@ export const Profile = () => {
     setUpdateUser(!canUpdateUser);
   };
 
-  // TODO: show orders
-
   return (
     <>
-      <AppBar />
       <SProfileHeader>Profile</SProfileHeader>
       <SProfileContainer>
         <SAvatarGridArea>

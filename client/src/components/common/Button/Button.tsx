@@ -5,9 +5,8 @@ import { useNavigate } from 'react-router-dom';
 export const Button = ({ name }: IButtonProps) => {
   const navigate = useNavigate();
 
-  const handleClick = (event: Event) => {
-    event.stopPropagation();
-    
+  const handleClick = () => {
+
     const route = name === 'logout' ? '' : name?.toLowerCase();
     navigate(`/${route}`);
   };

@@ -48,7 +48,10 @@ export class UserService {
       const newDto = new CreateUserDto({ ...data, password: createUserDto.password });
 
 
-      let user: User = this.userRepository.create(newDto);
+      let user: User = await this.userRepository.findOne({
+        where: { email: createUserDto.email },
+        relations: ['friends'],
+      }) ?? await this.userRepository.create(newDto);
 
       user = await queryRunner.manager.save(user);
       await queryRunner.commitTransaction();
