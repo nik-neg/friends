@@ -63,7 +63,7 @@ export const Profile = () => {
     console.log({ canUpdateUser, isValid, errors, userData });
     if (canUpdateUser && isValid) {
       const res = await fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
