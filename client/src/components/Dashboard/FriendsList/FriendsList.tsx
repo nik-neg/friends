@@ -31,8 +31,6 @@ export const FriendsList = () => {
     setFriendsList((prev) => prev.filter((friend) => friend.id !== id));
   };
 
-  console.log({ friendsList });
-
   return (
     <>
       <AppBar />

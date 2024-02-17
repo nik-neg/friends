@@ -27,7 +27,13 @@ export class FriendService {
       await queryRunner.startTransaction();
 
 
-      let friend = this.friendRepository.create({ ...omit(createFriendDto, 'userId'), users: [] });
+      // find or create friend
+      let friend = await this.friendRepository.findOne({
+          where: { email: createFriendDto.email },
+          relations: ['users'],
+        })
+        ?? await this.friendRepository.create({ ...omit(createFriendDto, 'userId'), users: [] });
+
       const user = await this.userService.findOne(createFriendDto.userId);
       friend.users.push(user);
       await this.friendRepository.save(friend);
