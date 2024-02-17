@@ -7,7 +7,6 @@ export const Button = ({ name }: IButtonProps) => {
 
   const handleClick = () => {
     const route = name === 'logout' ? '' : name?.toLowerCase();
-    
     navigate(`/${route}`);
   };
 

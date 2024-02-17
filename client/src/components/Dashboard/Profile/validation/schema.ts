@@ -1,12 +1,12 @@
-import * as yup from "yup";
+import * as yup from 'yup';
 
 export const updateUserSchema = yup.object().shape({
-  firstName: yup
+  first_name: yup
     .string()
-    .required("First name is required")
-    .min(2, "First name must be at least 2 characters"),
-  lastName: yup
+    .required('First name is required')
+    .min(2, 'First name must be at least 2 characters'),
+  last_name: yup
     .string()
-    .required("Last name is required")
-    .min(2, "First name must be at least 2 characters"),
+    .required('Last name is required')
+    .min(2, 'First name must be at least 2 characters'),
 });

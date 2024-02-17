@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { AppBar } from '../../AppBar';
-import { User } from '../common/User/User.tsx';
+import { User } from '../common/User';
+import { UserListContainer } from './UserList.styles.ts';
 
 export const UserList = () => {
-  const [userList, setMenuList] = useState<[]>([]);
+  const [userList, setUserList] = useState<[]>([]);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') ?? '');
   }, []);
 
 
@@ -17,20 +17,20 @@ export const UserList = () => {
   return (
     <>
       <AppBar />
-      <MenuContainer>
-        {userList.map((item, index) => {
+      <UserListContainer>
+        {[1, 2, 3].map((user, index) => {
           return (
             <User
               key={index}
-              userId={item.userId}
-              catalogImage={item.catalogImage}
-              description={item.description}
-              price={item.price}
+              userId={user.userId}
+              friendImage={user.avatar}
+              description={user.description}
+              price={user.price}
               isMenuItem
             />
           );
         })}
-      </MenuContainer>
+      </UserListContainer>
     </>
   );
 };

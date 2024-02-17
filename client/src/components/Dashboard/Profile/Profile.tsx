@@ -8,15 +8,18 @@ import {
   SUpdateButtonWrapper,
   SUserUpdateButton,
 } from './Profile.styles.ts';
-import { SProfileHeader } from '../../common/Text/Text.styles.ts';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 // @ts-ignore
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { updateUserSchema } from './validation/schema.ts';
+import { useUser } from '../../../context';
+import { Input } from '../../Welcome';
+import { AppBar } from '../../AppBar';
+import { SProfileHeader } from '../../common/Text';
 
 export const Profile = () => {
-  const [user, setUser] = useState(null);
+  const { userData } = useUser();
 
   useEffect(() => {
     // fetch user
@@ -24,8 +27,8 @@ export const Profile = () => {
 
 
   const defaultValues = {
-    firstName: user.firstName,
-    lastName: user.lastName,
+    first_name: userData.first_name,
+    last_name: userData.last_name,
   };
 
   const {
@@ -40,9 +43,9 @@ export const Profile = () => {
 
   const [canUpdateUser, setUpdateUser] = useState(false);
   const handleUpdate = async () => {
-    console.log({ canUpdateUser, isValid, errors, user });
+    console.log({ canUpdateUser, isValid, errors, userData });
     if (canUpdateUser && isValid) {
-      
+
     }
   };
 
@@ -70,18 +73,18 @@ export const Profile = () => {
           <SInputWrapper gridArea={'firstName'}>
             <Input
               type="text"
-              id={'firstName'}
-              value={canUpdateUser ? undefined : user?.firstName}
-              {...register('firstName')}
+              id={'first_name'}
+              value={canUpdateUser ? undefined : userData?.first_name}
+              {...register('first_name')}
               style={{ pointerEvents: canUpdateUser ? 'auto' : 'none' }}
             />
           </SInputWrapper>
           <SInputWrapper gridArea={'lastName'}>
             <Input
               type="text"
-              id={'lastName'}
-              value={canUpdateUser ? undefined : user?.lastName}
-              {...register('lastName')}
+              id={'last_name'}
+              value={canUpdateUser ? undefined : userData?.last_name}
+              {...register('last_name')}
               style={{ pointerEvents: canUpdateUser ? 'auto' : 'none' }}
             />
           </SInputWrapper>
@@ -89,7 +92,7 @@ export const Profile = () => {
             <Input
               type="text"
               id={'firstName'}
-              value={user?.email}
+              value={userData?.email}
               style={{ pointerEvents: 'none' }}
             />
           </SInputWrapper>

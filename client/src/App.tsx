@@ -11,6 +11,8 @@ function App() {
 
   const { isAuthenticated } = useUser();
 
+  console.log({ isAuthenticated });
+
   return (
     <SApp>
       <BrowserRouter>
@@ -21,7 +23,7 @@ function App() {
             element={isAuthenticated ? <FriendsList /> : <Navigate to="/" replace />}
           />
           <Route
-            path="/user"
+            path="/users"
             element={isAuthenticated ? <UserList /> : <Navigate to="/" replace />}
           />
           <Route
