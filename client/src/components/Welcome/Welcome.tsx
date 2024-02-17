@@ -8,6 +8,7 @@ import { IWelcome } from './types.ts';
 import { loginSchema, registerSchema } from './validation/schema.ts';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context';
+import { HttpStatusCode } from 'axios';
 
 export const Welcome = () => {
 
@@ -16,7 +17,6 @@ export const Welcome = () => {
   const [isRegistered, setIsRegistered] = useState(false);
 
   const navigate = useNavigate();
-
 
   const defaultValues: IWelcome = {
     first_name: '',
@@ -36,8 +36,9 @@ export const Welcome = () => {
   });
 
 
-  const handleLogin = async () => {
-    console.log({ key: import.meta.env.VITE_SERVER_URL_LOGIN });
+  const handleLogin = async (e: Event) => {
+    e.stopPropagation();
+
     if (isValid) {
       try {
         let url;
@@ -46,8 +47,6 @@ export const Welcome = () => {
         } else {
           url = import.meta.env.VITE_SERVER_URL_REGISTER;
         }
-
-        console.log({ url });
 
         const res = await fetch(url, {
           method: 'POST',
@@ -58,15 +57,16 @@ export const Welcome = () => {
           body: JSON.stringify(getValues()),
         });
 
-        const data = await res.json();
-        updateUser(data);
-
-        if (data?.access_token) {
-          handleAuthenticated(true);
+        if (res.status === HttpStatusCode.Created || res.status === HttpStatusCode.Ok) {
+          const data = await res.json();
+          updateUser(data);
+          localStorage.setItem('userData', JSON.stringify(data));
+          if (data?.access_token) {
+            handleAuthenticated(true);
+            navigate('/friends');
+          }
         }
 
-
-        navigate('/friends');
       } catch (error) {
         console.log({ error });
       }

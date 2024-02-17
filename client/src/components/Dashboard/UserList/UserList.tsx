@@ -25,7 +25,6 @@ export const UserList = () => {
               userId={user.userId}
               friendImage={user.avatar}
               description={user.description}
-              isFriend
             />
           );
         })}

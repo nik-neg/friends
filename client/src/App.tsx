@@ -11,8 +11,6 @@ function App() {
 
   const { isAuthenticated } = useUser();
 
-  console.log({ isAuthenticated });
-
   return (
     <SApp>
       <BrowserRouter>
