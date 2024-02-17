@@ -7,17 +7,31 @@ import {
 import { useEffect, useState } from 'react';
 import { AppBar } from '../../AppBar';
 import { User } from '../common/User';
+import queryString from 'query-string';
 
 export const FriendsList = () => {
-  useEffect(() => {
-  }, []);
-
-
-  useEffect(() => {
-
-  }, []);
-
   const [friendsList, setCartList] = useState<[]>([]);
+
+  const queryParams = {
+    take: 10,
+    skip: 5,
+    shouldFetchUsersFromApi: true,
+    page: 1,
+  };
+
+  const queryStr = queryString.stringify(queryParams);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_SERVER_URL_USER}?${queryStr}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    }).then((res) => res.json())
+      .then((data) => {
+      });
+  }, []);
 
 
   const handleCheckout = async () => {

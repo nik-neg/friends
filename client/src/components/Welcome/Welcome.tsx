@@ -37,15 +37,17 @@ export const Welcome = () => {
 
 
   const handleLogin = async () => {
-
+    console.log({ key: import.meta.env.VITE_SERVER_URL_LOGIN });
     if (isValid) {
       try {
         let url;
         if (isRegistered) {
-          url = 'http://localhost:3000/auth/login';
+          url = import.meta.env.VITE_SERVER_URL_LOGIN;
         } else {
-          url = 'http://localhost:3000/auth/register';
+          url = import.meta.env.VITE_SERVER_URL_REGISTER;
         }
+
+        console.log({ url });
 
         const res = await fetch(url, {
           method: 'POST',
