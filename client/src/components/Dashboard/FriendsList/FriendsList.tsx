@@ -62,7 +62,8 @@ export const FriendsList = () => {
                 key={index}
                 userId={friend.userId}
                 friendImage={friend.avatar}
-                description={friend.description}
+                name={friend.first_name + ' ' + friend.last_name}
+                email={friend.email}
                 isFriend
 
               />

@@ -1,7 +1,7 @@
 export interface UserProps {
-  description: string;
+  name: string;
   friendImage: string;
   isFriend?: boolean;
   userId?: string;
-  category?: string;
+  email?: string;
 }
