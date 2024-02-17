@@ -13,22 +13,44 @@ import { useForm } from 'react-hook-form';
 // @ts-ignore
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { updateUserSchema } from './validation/schema.ts';
-import { useUser } from '../../../context';
 import { Input } from '../../Welcome';
 import { AppBar } from '../../AppBar';
 import { SProfileHeader } from '../../common/Text';
+import { useUser } from '../../../context';
 
 export const Profile = () => {
   const { userData } = useUser();
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
-    // fetch user
+    setIsLoading(true);
+    if (userData?.id) {
+      fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          Authorization: `Bearer ${userData?.access_token}`,
+        },
+      }).then((res) => res.json())
+        .then(({ data }) => {
+          console.log({ data });
+          if (data?.length) {
+            setUser(data);
+
+            setIsLoading(false);
+          }
+        });
+    }
+
   }, []);
 
 
   const defaultValues = {
-    first_name: userData.first_name,
-    last_name: userData.last_name,
+    first_name: user?.first_name,
+    last_name: user?.last_name,
   };
 
   const {
