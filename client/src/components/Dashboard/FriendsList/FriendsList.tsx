@@ -12,7 +12,7 @@ import { useUser } from '../../../context';
 
 export const FriendsList = () => {
   const { userData, updateUser } = useUser();
-  const [friendsList, setCartList] = useState<[]>([]);
+  const [friendsList, setFriendsList] = useState<[]>(null);
 
   useEffect(() => {
     if (!userData) {
@@ -30,18 +30,20 @@ export const FriendsList = () => {
   const queryStr = queryString.stringify(queryParams);
 
   useEffect(() => {
-    console.log({ token: userData?.access_token });
-    fetch(`${import.meta.env.VITE_SERVER_URL_USER}?${queryStr}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        Authorization: `Bearer ${userData?.access_token}`,
-      },
-    }).then((res) => res.json())
-      .then((data) => {
-        console.log({ data });
-      });
+    if (!friendsList) {
+      fetch(`${import.meta.env.VITE_SERVER_URL_USER}?${queryStr}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          Authorization: `Bearer ${userData?.access_token}`,
+        },
+      }).then((res) => res.json())
+        .then(({ data }) => {
+          console.log({ data });
+          setFriendsList(data);
+        });
+    }
   }, []);
 
 
@@ -53,7 +55,7 @@ export const FriendsList = () => {
     <>
       <AppBar />
       <FriendsListContainer>
-        {[1, 2, 3].map(
+        {friendsList?.map(
           (friend: any, index: number) => {
             return (
               <User
