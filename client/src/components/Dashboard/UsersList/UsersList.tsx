@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { AppBar } from '../../AppBar';
 import { User } from '../common/User';
 import queryString from 'query-string';
 import { useUser } from '../../../context';
@@ -52,7 +51,6 @@ export const UsersList = () => {
 
   return (
     <>
-      <AppBar />
       <SUsersListContainer>
         {usersList?.map(
           (friend: any, index: number) => {

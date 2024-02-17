@@ -12,7 +12,7 @@ import { HttpStatusCode } from 'axios';
 
 export const Welcome = () => {
 
-  const { handleLoggedIn, handleAuthenticated, updateUser, userData } = useUser();
+  const { handleAuthenticated, updateUser } = useUser();
 
   const [isRegistered, setIsRegistered] = useState(false);
 
@@ -120,7 +120,6 @@ export const Welcome = () => {
             name={'submit'}
             id={'submit'}
             isSubmit
-            onClick={handleLogin}
           />
         </AuthForm>
       </AuthFormWrapper>

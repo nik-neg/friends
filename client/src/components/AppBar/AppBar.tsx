@@ -1,6 +1,6 @@
-import { appBarOptions } from "./consts.ts";
-import { SAppBar, SAppBarButtonWrapper } from "./AppBar.styles.ts";
-import { Button } from "../common/Button/Button.tsx";
+import { appBarOptions } from './consts.ts';
+import { SAppBar, SAppBarButtonWrapper } from './AppBar.styles.ts';
+import { Button } from '../common/Button';
 
 export const AppBar = () => {
   return (

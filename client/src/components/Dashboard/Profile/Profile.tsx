@@ -14,7 +14,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 import { updateUserSchema } from './validation/schema.ts';
 import { Input } from '../../Welcome';
-import { AppBar } from '../../AppBar';
 import { SProfileHeader } from '../../common/Text';
 import { useUser } from '../../../context';
 
@@ -87,7 +86,6 @@ export const Profile = () => {
 
   return (
     <>
-      <AppBar />
       <SProfileHeader>Profile</SProfileHeader>
       <SProfileContainer>
         <SAvatarGridArea>

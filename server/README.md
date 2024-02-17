@@ -11,3 +11,15 @@ ALLOWED_ORIGINS = ["https://localhost:3000", "www.google.com", "https://wwww.fac
 USER_SERVICE_API_URL = https://reqres.in/api/users
 ```
 
+Then run the docker-compose file to start the database
+
+```bash
+docker-compose up -d
+```
+
+Then run the following command to start the server
+
+```bash
+npm i
+npm run start:dev
+```

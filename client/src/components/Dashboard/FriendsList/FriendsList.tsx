@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { AppBar } from '../../AppBar';
 import { User } from '../common/User';
 import { FriendsListContainer } from './FriendsList.styles.ts';
 import { useUser } from '../../../context';
@@ -8,10 +7,8 @@ import { IFriend } from './types.ts';
 export const FriendsList = () => {
   const { userData } = useUser();
   const [friendsList, setFriendsList] = useState<IFriend[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
     fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
       method: 'GET',
       headers: {
@@ -23,7 +20,6 @@ export const FriendsList = () => {
       .then((data) => {
         const { friends } = data;
         setFriendsList(friends);
-        setIsLoading(false);
       });
   }, []);
 
@@ -33,7 +29,6 @@ export const FriendsList = () => {
 
   return (
     <>
-      <AppBar />
       <FriendsListContainer>
         {friendsList?.map((friend, index) => {
           return (
