@@ -1,9 +1,4 @@
-import {
-  FriendsListContainer,
-  SCheckoutColumnWrapper,
-  SCheckOutContainer,
-  SFriendsListButton,
-} from './FriendsList.styles.ts';
+import { FriendsListContainer, SFriendsListButton } from './FriendsList.styles.ts';
 import { useEffect, useState } from 'react';
 import { AppBar } from '../../AppBar';
 import { User } from '../common/User';
@@ -20,35 +15,38 @@ export const FriendsList = () => {
     }
   }, []);
 
+  const [page, setPage] = useState(1);
+
   const queryParams = {
     take: 10,
     skip: 5,
     shouldFetchUsersFromApi: true,
-    page: 1,
+    page,
   };
 
   const queryStr = queryString.stringify(queryParams);
 
   useEffect(() => {
-    if (!friendsList) {
-      fetch(`${import.meta.env.VITE_SERVER_URL_USER}?${queryStr}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          Authorization: `Bearer ${userData?.access_token}`,
-        },
-      }).then((res) => res.json())
-        .then(({ data }) => {
-          console.log({ data });
+    fetch(`${import.meta.env.VITE_SERVER_URL_USER}?${queryStr}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        Authorization: `Bearer ${userData?.access_token}`,
+      },
+    }).then((res) => res.json())
+      .then(({ data }) => {
+        if (data.length) {
           setFriendsList(data);
-        });
-    }
-  }, []);
+        }
+      });
+  }, [page]);
 
-
-  const handleCheckout = async () => {
-
+  const handlePrevious = async () => {
+    setPage(page - 1 > 0 ? page - 1 : 1);
+  };
+  const handleNext = async () => {
+    setPage(page + 1);
   };
 
   return (
@@ -70,12 +68,9 @@ export const FriendsList = () => {
             );
           },
         )}
+        <SFriendsListButton onClick={handlePrevious}>Previous</SFriendsListButton>
+        <SFriendsListButton onClick={handleNext}>Next</SFriendsListButton>
       </FriendsListContainer>
-      <SCheckOutContainer>
-        <SCheckoutColumnWrapper>
-          <SFriendsListButton onClick={handleCheckout}>Checkout</SFriendsListButton>
-        </SCheckoutColumnWrapper>
-      </SCheckOutContainer>
     </>
   );
 };
