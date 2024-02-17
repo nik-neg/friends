@@ -16,12 +16,18 @@ async function bootstrap() {
   const port = configService.get<number>('PORT');
 
   app.enableCors({
-    origin: JSON.parse(configService.get('ALLOWED_ORIGIN')),
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-
+    origin: (origin, callback) => {
+      const allowedOrigins = JSON.parse(configService.get('ALLOWED_ORIGINS'));
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Accept,Authorization',
   });
+
   console.log(`Server is running on port ${port}`);
   await app.listen(port);
 }

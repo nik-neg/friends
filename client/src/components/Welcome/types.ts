@@ -1,6 +1,6 @@
 export interface IWelcome {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  lastt_name: string;
   email: string;
   password: string;
 }

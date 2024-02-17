@@ -16,8 +16,8 @@ export const Welcome = () => {
 
 
   const defaultValues: IWelcome = {
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
   };
@@ -34,17 +34,38 @@ export const Welcome = () => {
 
 
   const handleLogin = async () => {
+
     if (isValid) {
       try {
         let userData;
         if (isRegistered) {
-
+          fetch('http://localhost:3000/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(getValues()),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              userData = data;
+            });
         } else {
-
+          fetch('http://localhost:3000/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(getValues()),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              userData = data;
+            });
         }
-        localStorage.setItem('user', JSON.stringify(userData));
-
-        navigate('/menu');
+        navigate('/friends-list');
       } catch (error) {
         console.log({ error });
       }
@@ -60,8 +81,8 @@ export const Welcome = () => {
               <Input
                 type="text"
                 placeholder="FirstName"
-                id={'firstName'}
-                {...register('firstName')}
+                id={'first_name'}
+                {...register('first_name')}
               />
               {errors.firstName && (
                 <SWarningSpan>{errors.firstName.message}</SWarningSpan>
@@ -69,8 +90,8 @@ export const Welcome = () => {
               <Input
                 type="text"
                 placeholder="LastName"
-                id={'lastName'}
-                {...register('lastName')}
+                id={'last_name'}
+                {...register('last_name')}
               />
               {errors.lastName && (
                 <SWarningSpan>{errors.lastName.message}</SWarningSpan>
