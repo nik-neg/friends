@@ -1,19 +1,28 @@
 import {
-  Controller,
-  Get,
-  Post,
+  BadRequestException,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUserDto } from './dto/GetUsersDto.dto';
+import { CreateUserDto } from './dto/CreateUserDto.dto';
+import { UpdateUserDto } from './dto/UpdateUserDto.dto';
+import { AdminGuard } from '../auth/guards/auth.guard';
+import { AuthGuard } from '../auth/guards/admin.guard';
+
 
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {
+  }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -21,8 +30,8 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query() getUserDto: GetUserDto) {
+    return this.userService.findAll(getUserDto);
   }
 
   @Get(':id')
@@ -32,9 +41,14 @@ export class UserController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const { first_name, last_name } = updateUserDto;
+    if (!first_name && !last_name) {
+      throw new BadRequestException('At least one field should be provided');
+    }
     return this.userService.update(+id, updateUserDto);
   }
 
+  @UseGuards(AdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);

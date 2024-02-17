@@ -1,13 +1,17 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { RegisterDto } from './dto/RegisterDto.dto';
 import * as bcrypt from 'bcrypt';
-import { PostgresErrorCode, SALT_ROUNDS } from './consts';
+import { SALT_ROUNDS } from './consts';
 import { LoginDto } from './dto/LoginDto.dto';
+import { CreateUserDto } from '../user/dto/CreateUserDto.dto';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
@@ -16,42 +20,40 @@ export class AuthService {
 
   async signIn(
     loginDto: LoginDto,
-  ): Promise<{ access_token: string }> {
+  ): Promise<User & { access_token: string }> {
 
     const { email, password: pass } = loginDto;
 
     const user = await this.getAuthenticatedUser(email, pass);
 
     const payload = {
-      sub: user.id,
+      id: user.id,
       username: `${user.first_name} ${user.last_name}`,
     };
     return {
+      ...user,
       access_token: await this.jwtService.signAsync(payload),
     };
   }
 
   async register(registerDto: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registerDto.password, SALT_ROUNDS);
-    try {
-      const createdUser = await this.userService.create({
-        ...registerDto,
-        password: hashedPassword,
-      });
-      createdUser.password = undefined;
-      return createdUser;
-    } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException(
-          'User with that email already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+
+    const newDto = new CreateUserDto({
+      ...registerDto,
+      password: hashedPassword,
+    });
+    const createdUser = await this.userService.create(newDto);
+
+    const payload = {
+      id: createdUser.id,
+      username: `${createdUser.first_name} ${createdUser.last_name}`,
+    };
+    return {
+      ...createdUser,
+      access_token: await this.jwtService.signAsync(payload),
+    };
+
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
@@ -61,6 +63,9 @@ export class AuthService {
       user.password = undefined;
       return user;
     } catch (error) {
+
+      this.logger.error(error);
+
       throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
     }
   }

@@ -15,4 +15,5 @@ export class RegisterDto {
   @IsString()
   @Length(6, 20)
   password: string;
+
 }
