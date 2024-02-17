@@ -8,6 +8,7 @@ export const User = ({
                        name,
                        email,
                        isFriend,
+                       onHandleFriend,
                      }: UserProps) => {
 
   const { userData } = useUser();
@@ -39,6 +40,7 @@ export const User = ({
           email,
         }),
       });
+      onHandleFriend?.(userId);
     }
   };
 

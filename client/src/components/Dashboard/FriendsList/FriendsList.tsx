@@ -27,11 +27,17 @@ export const FriendsList = () => {
       });
   }, []);
 
+  const handleFriendsList = async (id: number) => {
+    setFriendsList((prev) => prev.filter((friend) => friend.id !== id));
+  };
+
+  console.log({ friendsList });
+
   return (
     <>
       <AppBar />
       <FriendsListContainer>
-        {friendsList.map((friend, index) => {
+        {friendsList?.map((friend, index) => {
           return (
             <User
               key={index}
@@ -39,6 +45,7 @@ export const FriendsList = () => {
               friendImage={friend.friendImage}
               name={friend.name}
               email={friend.email}
+              onHandleFriend={handleFriendsList}
               isFriend
             />
           );

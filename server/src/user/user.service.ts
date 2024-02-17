@@ -163,11 +163,11 @@ export class UserService {
       await queryRunner.connect();
       await queryRunner.startTransaction();
 
-      // const user = await this.userRepository.findOne({ where: { id }, relations: ['friends'] });
-      // if (user) {
-      //   user.friends = user.friends.filter(friend => friend.id !== id);
-      //   await this.userRepository.save(user);
-      // }
+      const user = await this.userRepository.findOne({ where: { id }, relations: ['friends'] });
+      if (user) {
+        user.friends = user.friends.filter(friend => friend.id !== id);
+        await this.userRepository.save(user);
+      }
 
       const res = this.userRepository.delete(id);
       await queryRunner.commitTransaction();
@@ -182,4 +182,29 @@ export class UserService {
       await queryRunner.release();
     }
   }
+
+  async removeFriendFromUser(userId: number, friendId: number): Promise<void> {
+    const queryRunner = this.connection.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        relations: ['friends'],
+      });
+
+      if (user) {
+        user.friends = user.friends.filter(friend => friend.id !== friendId);
+        await this.userRepository.save(user);
+      }
+    } catch (err) {
+      this.logger.error(err);
+
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
 }

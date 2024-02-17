@@ -13,7 +13,7 @@ export class FriendController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.friendService.remove(+id);
+  remove(@Param('id') id: string, @Param('userId') userId: string) {
+    return this.friendService.remove(+id, +userId);
   }
 }

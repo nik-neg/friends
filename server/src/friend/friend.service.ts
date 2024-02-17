@@ -51,7 +51,22 @@ export class FriendService {
     return this.friendRepository.findOne({ where: { id } });
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} friend`;
+  async remove(userId: number, friendId: number): Promise<void> {
+    const queryRunner = this.connection.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      await this.userService.removeFriendFromUser(userId, friendId);
+      
+    } catch (err) {
+      this.logger.error(err);
+
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
+
 }
