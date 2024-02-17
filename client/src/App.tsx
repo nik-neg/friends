@@ -15,11 +15,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route
-            path="/menu"
+            path="/friends-list"
             element={isAuthenticated ? <UserList /> : <Navigate to="/" replace />}
           />
           <Route
-            path="/cart"
+            path="/user-list"
             element={isAuthenticated ? <FriendsList /> : <Navigate to="/" replace />}
           />
           <Route

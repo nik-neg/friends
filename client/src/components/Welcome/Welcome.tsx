@@ -7,8 +7,11 @@ import { useForm } from 'react-hook-form';
 import { IWelcome } from './types.ts';
 import { loginSchema, registerSchema } from './validation/schema.ts';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../context';
 
 export const Welcome = () => {
+
+  const { handleLoggedIn, handleAuthenticated, updateUser } = useUser();
 
   const [isRegistered, setIsRegistered] = useState(false);
 
@@ -48,9 +51,7 @@ export const Welcome = () => {
             body: JSON.stringify(getValues()),
           })
             .then((response) => response.json())
-            .then((data) => {
-              userData = data;
-            });
+            .then((data) => updateUser(data));
         } else {
           fetch('http://localhost:3000/auth/register', {
             method: 'POST',
@@ -61,10 +62,9 @@ export const Welcome = () => {
             body: JSON.stringify(getValues()),
           })
             .then((response) => response.json())
-            .then((data) => {
-              userData = data;
-            });
+            .then((data) => updateUser(data));
         }
+        
         navigate('/friends-list');
       } catch (error) {
         console.log({ error });
