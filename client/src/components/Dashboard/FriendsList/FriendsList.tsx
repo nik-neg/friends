@@ -8,6 +8,7 @@ import { useUser } from '../../../context';
 export const FriendsList = () => {
   const { userData, updateUser } = useUser();
   const [friendsList, setFriendsList] = useState<[]>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!userData) {
@@ -27,6 +28,7 @@ export const FriendsList = () => {
   const queryStr = queryString.stringify(queryParams);
 
   useEffect(() => {
+    setIsLoading(true);
     fetch(`${import.meta.env.VITE_SERVER_URL_USER}?${queryStr}`, {
       method: 'GET',
       headers: {
@@ -38,6 +40,7 @@ export const FriendsList = () => {
       .then(({ data }) => {
         if (data.length) {
           setFriendsList(data);
+          setIsLoading(false);
         }
       });
   }, [page]);
@@ -68,8 +71,12 @@ export const FriendsList = () => {
             );
           },
         )}
-        <SFriendsListButton onClick={handlePrevious}>Previous</SFriendsListButton>
-        <SFriendsListButton onClick={handleNext}>Next</SFriendsListButton>
+        {!isLoading && (
+          <>
+            <SFriendsListButton onClick={handlePrevious}>Previous</SFriendsListButton>
+            <SFriendsListButton onClick={handleNext}>Next</SFriendsListButton></>
+        )}
+
       </FriendsListContainer>
     </>
   );
