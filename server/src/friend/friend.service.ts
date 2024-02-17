@@ -26,7 +26,8 @@ export class FriendService {
 
 
       let friend = this.friendRepository.create(omit(createFriendDto, 'userId'));
-      friend.user = await this.userService.findOne(createFriendDto.userId);
+      const user = await this.userService.findOne(createFriendDto.userId);
+      friend.users.push(user);
       await this.friendRepository.save(friend);
 
       friend = await queryRunner.manager.save(friend);

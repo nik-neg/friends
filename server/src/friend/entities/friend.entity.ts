@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
 @Entity()
@@ -10,14 +10,12 @@ export class Friend {
   email: string;
 
   @Column()
-  first_name: string;
-
-  @Column()
-  last_name: string;
+  name: string;
 
   @Column({ nullable: true })
-  avatar?: string;
+  friendImage?: string;
 
-  @ManyToOne(() => User, (user) => user.friends)
-  user: User;
+  @ManyToMany(() => User)
+  @JoinTable()
+  users: User[];
 }

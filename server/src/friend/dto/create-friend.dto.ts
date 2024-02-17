@@ -9,7 +9,7 @@ export class CreateFriendDto {
 
   @IsString()
   name: string;
-
+  
   @IsEmail()
   email: string;
 }

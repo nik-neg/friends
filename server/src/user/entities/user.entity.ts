@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Friend } from '../../friend/entities/friend.entity';
 
 @Entity()
@@ -24,6 +24,7 @@ export class User {
   @Column({ default: true }) // can be set manually in the database, or later via backoffice
   isAdmin: boolean;
 
-  @OneToMany(() => Friend, (friend) => friend.user)
+  @ManyToMany(() => Friend)
+  @JoinTable()
   friends: Friend[];
 }
