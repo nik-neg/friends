@@ -20,11 +20,9 @@ import { useUser } from '../../../context';
 export const Profile = () => {
   const { userData } = useUser();
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
-    setIsLoading(true);
     if (userData?.id) {
       fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
         method: 'GET',
@@ -38,8 +36,6 @@ export const Profile = () => {
           console.log({ data });
           if (data?.length) {
             setUser(data);
-
-            setIsLoading(false);
           }
         });
     }
@@ -67,7 +63,7 @@ export const Profile = () => {
     console.log({ canUpdateUser, isValid, errors, userData });
     if (canUpdateUser && isValid) {
       const res = await fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -81,8 +77,6 @@ export const Profile = () => {
   const handleEdit = () => {
     setUpdateUser(!canUpdateUser);
   };
-
-  // TODO: show orders
 
   return (
     <>
