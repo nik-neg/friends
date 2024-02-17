@@ -1,5 +1,6 @@
 import { SDescription, SEmail, SImage, SItemButton, SUserCard } from './User.styles.ts';
 import { UserProps } from './types.ts';
+import { useUser } from '../../../../context';
 
 export const User = ({
                        userId,
@@ -8,7 +9,23 @@ export const User = ({
                        email,
                        isFriend,
                      }: UserProps) => {
-  const handleItem = () => {
+
+  const { userData } = useUser();
+  const handleUser = async () => {
+    if (isFriend) {
+      // remove
+      const res = fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          Authorization: `Bearer ${userData?.access_token}`,
+        },
+        body: JSON.stringify({ friendId: userId }),
+      });
+    } else {
+      // add
+    }
   };
 
   return (
@@ -22,7 +39,7 @@ export const User = ({
       <SDescription>{name}</SDescription>
       <SEmail>{email}</SEmail>
 
-      <SItemButton onClick={handleItem}>
+      <SItemButton onClick={handleUser}>
         {isFriend ? 'Add to list' : 'Remove from list'}
       </SItemButton>
     </SUserCard>

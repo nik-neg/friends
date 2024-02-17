@@ -143,8 +143,15 @@ export class UserService {
       await queryRunner.connect();
       await queryRunner.startTransaction();
 
+      const user = await this.userRepository.findOne({ where: { id }, relations: ['friends'] });
+      if (user) {
+        user.friends = user.friends.filter(friend => friend.id !== id);
+        await this.userRepository.save(user);
+      }
+
       const res = this.userRepository.delete(id);
       await queryRunner.commitTransaction();
+
       return res;
 
     } catch (err) {
