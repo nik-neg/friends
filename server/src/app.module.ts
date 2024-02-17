@@ -8,6 +8,7 @@ import * as process from 'process';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { FriendModule } from './friend/friend.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     }),
     UserModule,
     AuthModule,
+    FriendModule,
   ],
   controllers: [],
   providers: [],

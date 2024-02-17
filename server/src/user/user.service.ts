@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { HttpService } from '@nestjs/axios';
 import { omit } from 'lodash';
 import { CreateUserDto } from './dto/CreateUserDto.dto';
 import { UpdateUserDto } from './dto/UpdateUserDto.dto';
+import { FriendService } from '../friend/friend.service';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,8 @@ export class UserService {
     private readonly connection: Connection,
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
+    @Inject(forwardRef(() => FriendService))
+    private readonly friendService: FriendService,
   ) {
   }
 
@@ -102,7 +105,14 @@ export class UserService {
 
   async findOne(id: number) {
     try {
-      return await this.userRepository.findOne({ where: { id } });
+      const user = await this.userRepository
+        .createQueryBuilder('user')
+        .where('user.id = :id', { id })
+        .leftJoinAndSelect('user.friends', 'friends')
+        .getOne();
+
+      return omit(user, 'password') as User;
+
     } catch (err) {
       this.logger.error(err);
     }
@@ -136,6 +146,16 @@ export class UserService {
 
   }
 
+  async addFriend(userId: number, friendId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['friends'] });
+    const friend = await this.friendService.findOne(friendId);
+
+    if (user && friend) {
+      user.friends.push(friend);
+      await this.userRepository.save(user);
+    }
+  }
+
   async remove(id: number) {
     const queryRunner = this.connection.createQueryRunner();
 
@@ -143,8 +163,15 @@ export class UserService {
       await queryRunner.connect();
       await queryRunner.startTransaction();
 
-      const res = this.userRepository.delete(id);
+      const user = await this.userRepository.findOne({ where: { id }, relations: ['friends'] });
+      if (user) {
+        user.friends = user.friends.filter(friend => friend.id !== id);
+        await this.userRepository.save(user);
+      }
+
+      const res = await this.userRepository.delete(id);
       await queryRunner.commitTransaction();
+
       return res;
 
     } catch (err) {
@@ -155,4 +182,29 @@ export class UserService {
       await queryRunner.release();
     }
   }
+
+  async removeFriendFromUser(userId: number, friendId: number): Promise<void> {
+    const queryRunner = this.connection.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        relations: ['friends'],
+      });
+
+      if (user) {
+        user.friends = user.friends.filter(friend => friend.id !== friendId);
+        await this.userRepository.save(user);
+      }
+    } catch (err) {
+      this.logger.error(err);
+
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
 }

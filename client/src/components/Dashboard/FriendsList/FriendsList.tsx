@@ -2,25 +2,49 @@ import { useEffect, useState } from 'react';
 import { AppBar } from '../../AppBar';
 import { User } from '../common/User';
 import { FriendsListContainer } from './FriendsList.styles.ts';
+import { useUser } from '../../../context';
+import { IFriend } from './types.ts';
 
 export const FriendsList = () => {
-  const [friendsList, setFriendsList] = useState<[]>([]);
+  const { userData } = useUser();
+  const [friendsList, setFriendsList] = useState<IFriend[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
+    fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        Authorization: `Bearer ${userData?.access_token}`,
+      },
+    }).then((res) => res.json())
+      .then((data) => {
+        const { friends } = data;
+        setFriendsList(friends);
+        setIsLoading(false);
+      });
   }, []);
+
+  const handleFriendsList = async (id: number) => {
+    setFriendsList((prev) => prev.filter((friend) => friend.id !== id));
+  };
 
   return (
     <>
       <AppBar />
       <FriendsListContainer>
-        {[1, 2, 3].map((user, index) => {
+        {friendsList?.map((friend, index) => {
           return (
             <User
               key={index}
-              userId={user.userId}
-              friendImage={user.avatar}
-              name={user.first_name + ' ' + user.last_name}
-              email={user.email}
+              userId={friend.id}
+              friendImage={friend.friendImage}
+              name={friend.name}
+              email={friend.email}
+              onHandleFriend={handleFriendsList}
+              isFriend
             />
           );
         })}

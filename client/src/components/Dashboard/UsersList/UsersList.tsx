@@ -19,8 +19,6 @@ export const UsersList = () => {
   const [page, setPage] = useState(1);
 
   const queryParams = {
-    take: 10,
-    skip: 5,
     shouldFetchUsersFromApi: true,
     page,
   };
@@ -65,8 +63,6 @@ export const UsersList = () => {
                 friendImage={friend.avatar}
                 name={friend.first_name + ' ' + friend.last_name}
                 email={friend.email}
-                isFriend
-
               />
             );
           },

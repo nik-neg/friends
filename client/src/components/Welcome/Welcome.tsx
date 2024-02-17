@@ -36,8 +36,7 @@ export const Welcome = () => {
   });
 
 
-  const handleLogin = async (e: Event) => {
-    e.stopPropagation();
+  const handleLogin = async () => {
 
     if (isValid) {
       try {

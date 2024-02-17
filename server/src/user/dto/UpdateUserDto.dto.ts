@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsNotEmpty, IsOptional, IsString, ValidateIf } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateIf } from 'class-validator';
 import { CreateUserDto } from './CreateUserDto.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
@@ -13,4 +13,8 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @ValidateIf(o => o.first_name === true)
   last_name?: string;
+
+  @IsNumber()
+  @IsOptional()
+  friend?: number;
 }

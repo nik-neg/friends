@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Friend } from '../../friend/entities/friend.entity';
 
 @Entity()
 export class User {
@@ -20,6 +21,10 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: false }) // can be set manually in the database, or later via backoffice
+  @Column({ default: true }) // can be set manually in the database, or later via backoffice
   isAdmin: boolean;
+
+  @ManyToMany(() => Friend)
+  @JoinTable()
+  friends: Friend[];
 }
