@@ -169,7 +169,7 @@ export class UserService {
         await this.userRepository.save(user);
       }
 
-      const res = this.userRepository.delete(id);
+      const res = await this.userRepository.delete(id);
       await queryRunner.commitTransaction();
 
       return res;

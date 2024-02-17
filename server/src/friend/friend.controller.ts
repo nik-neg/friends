@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Query } from '@nestjs/common';
 import { FriendService } from './friend.service';
 import { CreateFriendDto } from './dto/create-friend.dto';
+import { RemoveFriendDto } from './dto/remove-friend.dto';
 
 @Controller('friend')
 export class FriendController {
@@ -12,8 +13,9 @@ export class FriendController {
     return this.friendService.create(createFriendDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string, @Param('userId') userId: string) {
-    return this.friendService.remove(+id, +userId);
+  @Delete()
+  remove(@Query() removeFriendDto: RemoveFriendDto) {
+
+    return this.friendService.remove(removeFriendDto);
   }
 }

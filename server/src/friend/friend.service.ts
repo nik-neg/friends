@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
 import { Friend } from './entities/friend.entity';
 import { UserService } from '../user/user.service';
+import { RemoveFriendDto } from './dto/remove-friend.dto';
 
 @Injectable()
 export class FriendService {
@@ -51,7 +52,8 @@ export class FriendService {
     return this.friendRepository.findOne({ where: { id } });
   }
 
-  async remove(userId: number, friendId: number): Promise<void> {
+  async remove(removeFriendDto: RemoveFriendDto): Promise<void> {
+    const { userId, friendId } = removeFriendDto;
     const queryRunner = this.connection.createQueryRunner();
 
     try {
@@ -59,7 +61,7 @@ export class FriendService {
       await queryRunner.startTransaction();
 
       await this.userService.removeFriendFromUser(userId, friendId);
-      
+
     } catch (err) {
       this.logger.error(err);
 
