@@ -105,12 +105,13 @@ export class UserService {
 
   async findOne(id: number) {
     try {
-      // return await this.userRepository.findOne({ where: { id }, relations: ['friends'] });
-      return this.userRepository
+      const user = await this.userRepository
         .createQueryBuilder('user')
         .where('user.id = :id', { id })
         .leftJoinAndSelect('user.friends', 'friends')
         .getOne();
+
+      return omit(user, 'password') as User;
 
     } catch (err) {
       this.logger.error(err);
