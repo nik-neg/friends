@@ -4,14 +4,9 @@ import { User } from '../common/User';
 import { FriendsListContainer } from './FriendsList.styles.ts';
 
 export const FriendsList = () => {
-  const [userList, setUserList] = useState<[]>([]);
+  const [friendsList, setFriendsList] = useState<[]>([]);
 
   useEffect(() => {
-  }, []);
-
-
-  useEffect(() => {
-
   }, []);
 
   return (
@@ -24,7 +19,8 @@ export const FriendsList = () => {
               key={index}
               userId={user.userId}
               friendImage={user.avatar}
-              description={user.description}
+              name={user.first_name + ' ' + user.last_name}
+              email={user.email}
             />
           );
         })}
