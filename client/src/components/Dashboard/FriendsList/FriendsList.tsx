@@ -1,6 +1,10 @@
-import { FriendsListContainer, SCheckoutColumnWrapper, SCheckOutContainer } from './FriendsList.styles.ts';
+import {
+  FriendsListContainer,
+  SCheckoutColumnWrapper,
+  SCheckOutContainer,
+  SFriendsListButton,
+} from './FriendsList.styles.ts';
 import { User } from '../common/User/User.tsx';
-import { AppBar } from '../../AppBar/AppBar.tsx';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -44,7 +48,7 @@ export const FriendsList = () => {
       </FriendsListContainer>
       <SCheckOutContainer>
         <SCheckoutColumnWrapper>
-          <SCartButton onClick={handleCheckout}>Checkout</SCartButton>
+          <SFriendsListButton onClick={handleCheckout}>Checkout</SFriendsListButton>
         </SCheckoutColumnWrapper>
       </SCheckOutContainer>
     </>

@@ -1,10 +1,10 @@
 import './App.styles.ts';
 import { SApp } from './App.styles.ts';
-import { UserList } from './components/Dashboard/UserList/UserList.tsx';
-import { Welcome } from './components/Welcome/Welcome.tsx';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { FriendsList } from './components/Dashboard/FriendsList/FriendsList.tsx';
-import { Profile } from './components/Dashboard/Profile/Profile.tsx';
+import { Welcome } from './components/Welcome';
+import { UserList } from './components/Dashboard/UserList';
+import { FriendsList } from './components/Dashboard/FriendsList';
+import { Profile } from './components/Dashboard/Profile';
 
 function App() {
 

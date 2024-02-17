@@ -9,9 +9,7 @@ import {
   SUserUpdateButton,
 } from './Profile.styles.ts';
 import { SProfileHeader } from '../../common/Text/Text.styles.ts';
-import { AppBar } from '../../AppBar/AppBar.tsx';
 import { useEffect, useState } from 'react';
-import { Input } from '../../Welcome/Welcome.styles.ts';
 import { useForm } from 'react-hook-form';
 // @ts-ignore
 import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
@@ -44,15 +42,7 @@ export const Profile = () => {
   const handleUpdate = async () => {
     console.log({ canUpdateUser, isValid, errors, user });
     if (canUpdateUser && isValid) {
-      const updatedUser = await updateUserFetch({
-        ...getValues(),
-        _id: user._id,
-      }).unwrap();
-      const { firstName, lastName } = updatedUser;
-      localStorage.setItem(
-        'user',
-        JSON.stringify({ ...user, firstName, lastName }),
-      );
+      
     }
   };
 

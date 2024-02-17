@@ -1,6 +1,6 @@
-import { User } from '../common/User/User.tsx';
-import { AppBar } from '../../AppBar/AppBar.tsx';
 import { useEffect, useState } from 'react';
+import { AppBar } from '../../AppBar';
+import { User } from '../common/User/User.tsx';
 
 export const UserList = () => {
   const [userList, setMenuList] = useState<[]>([]);

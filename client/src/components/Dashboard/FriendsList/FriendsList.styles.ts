@@ -26,11 +26,6 @@ export const SCheckoutColumnWrapper = styled.div`
     margin: 1rem;
 `;
 
-export const SFriendsListSum = styled.div`
-    color: white;
-    font-size: 20px;
-    text-align: center;
-`;
 export const SFriendsListButton = styled(SButton)`
     width: 100px;
     height: 50px;
