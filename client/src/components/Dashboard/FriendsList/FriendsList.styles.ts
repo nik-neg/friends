@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { SButton } from '../../common/Button/Button.styles.ts';
 
 export const FriendsListContainer = styled.div`
     display: flex;
@@ -14,9 +13,3 @@ export const FriendsListContainer = styled.div`
         justify-content: center;
     }
 `;
-
-export const SFriendsListButton = styled(SButton)`
-    width: 100px;
-    height: 50px;
-`;
-

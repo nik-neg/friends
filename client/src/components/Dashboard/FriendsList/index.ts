@@ -1,2 +1,2 @@
-export * from './FriendsList.styles';
-export * from './FriendsList.tsx';
+export * from './UserList.styles.ts';
+export * from './UserList.tsx';
