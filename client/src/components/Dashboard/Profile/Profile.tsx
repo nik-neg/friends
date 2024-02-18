@@ -49,8 +49,6 @@ export const Profile = () => {
     }
   }, []);
 
-  console.log({ userData });
-
   const defaultValues = {
     first_name: userData?.first_name,
     last_name: userData?.last_name,
@@ -81,7 +79,6 @@ export const Profile = () => {
         }
       );
       const data = await res.json();
-      console.log({ data });
       updateUser((prev: IUser) => ({
         ...prev,
         first_name: data?.first_name,
