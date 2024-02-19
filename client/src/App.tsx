@@ -1,16 +1,15 @@
-import './App.styles.ts';
-import { SApp } from './App.styles.ts';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { Welcome } from './components/Welcome';
-import { Profile } from './components/Dashboard/Profile';
-import { useUser } from './context';
-import { FriendsList } from './components/Dashboard/FriendsList/FriendsList.tsx';
-import { UsersList } from './components/Dashboard/UsersList/UsersList.tsx';
-import { AppBar } from './components/AppBar';
+import "./App.styles.ts";
+import { SApp } from "./App.styles.ts";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Welcome } from "./components/Welcome";
+import { Profile } from "./components/Dashboard/Profile";
+import { useUser } from "./context";
+import { FriendsList } from "./components/Dashboard/FriendsList/FriendsList.tsx";
+import { UsersList } from "./components/Dashboard/UsersList/UsersList.tsx";
+import { AppBar } from "./components/AppBar";
 
 function App() {
-
-  const { isAuthenticated, isLoggedIn } = useUser();
+  const { isAuthenticated } = useUser();
 
   return (
     <SApp>
@@ -20,11 +19,15 @@ function App() {
           <Route path="/" element={<Welcome />} />
           <Route
             path="/users"
-            element={isAuthenticated ? <UsersList /> : <Navigate to="/" replace />}
+            element={
+              isAuthenticated ? <UsersList /> : <Navigate to="/" replace />
+            }
           />
           <Route
             path="/friends"
-            element={isAuthenticated ? <FriendsList /> : <Navigate to="/" replace />}
+            element={
+              isAuthenticated ? <FriendsList /> : <Navigate to="/" replace />
+            }
           />
           <Route
             path="/profile"

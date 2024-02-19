@@ -1,8 +1,11 @@
+import { IFriend } from "../../FriendsList/types.ts";
+
 export interface UserProps {
   name: string;
   friendImage: string;
   isFriend?: boolean;
   userId: number;
   email?: string;
-  onHandleFriend?: (id: number) => void;
+  onHandleRemoveFriend?: (id: number) => void;
+  onHandleAddFriend?: (friend: IFriend) => void;
 }

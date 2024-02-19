@@ -14,15 +14,13 @@ import { UserService } from './user.service';
 import { GetUserDto } from './dto/GetUsersDto.dto';
 import { CreateUserDto } from './dto/CreateUserDto.dto';
 import { UpdateUserDto } from './dto/UpdateUserDto.dto';
-import { AdminGuard } from '../auth/guards/auth.guard';
-import { AuthGuard } from '../auth/guards/admin.guard';
-
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 
 @Controller('user')
 @UseGuards(AuthGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {
-  }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
