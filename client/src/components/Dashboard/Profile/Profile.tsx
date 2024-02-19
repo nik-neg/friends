@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 export const Profile = () => {
   const navigate = useNavigate();
 
-  const { userData, updateUser } = useUser();
+  const { userData, updateUser, handleAuthenticated } = useUser();
   const [user, setUser] = useState<IProfile>({});
 
   useEffect(() => {
@@ -104,6 +104,7 @@ export const Profile = () => {
         Authorization: `Bearer ${userData?.access_token}`,
       },
     });
+    handleAuthenticated(false);
     navigate("/");
   };
 
