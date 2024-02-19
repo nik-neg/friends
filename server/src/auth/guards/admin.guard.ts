@@ -11,10 +11,7 @@ import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
-  constructor(
-    private jwtService: JwtService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
