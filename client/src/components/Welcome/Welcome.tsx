@@ -66,7 +66,7 @@ export const Welcome = () => {
         ) {
           const data = await res.json();
           updateUser(data);
-          localStorage.setItem("userData", JSON.stringify(data));
+
           if (data?.access_token) {
             handleAuthenticated(true);
             navigate("/friends");
