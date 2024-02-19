@@ -17,8 +17,11 @@ import { Input } from "../../Welcome";
 import { SProfileHeader } from "../../common/Text";
 import { IUser, useUser } from "../../../context";
 import { IProfile } from "./types.ts";
+import { useNavigate } from "react-router-dom";
 
 export const Profile = () => {
+  const navigate = useNavigate();
+
   const { userData, updateUser } = useUser();
   const [user, setUser] = useState<IProfile>({});
 
@@ -92,6 +95,18 @@ export const Profile = () => {
     setUpdateUser(!canUpdateUser);
   };
 
+  const removeUser = async () => {
+    await fetch(`${import.meta.env.VITE_SERVER_URL_USER}/${userData?.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${userData?.access_token}`,
+      },
+    });
+    navigate("/");
+  };
+
   return (
     <>
       <SProfileHeader>Profile</SProfileHeader>
@@ -140,6 +155,9 @@ export const Profile = () => {
         </SUpdateButtonWrapper>
         <SUpdateButtonWrapper>
           <SUserUpdateButton onClick={handleUpdate}>Update</SUserUpdateButton>
+        </SUpdateButtonWrapper>
+        <SUpdateButtonWrapper>
+          <SUserUpdateButton onClick={removeUser}>Delete</SUserUpdateButton>
         </SUpdateButtonWrapper>
       </SUpdateButtonPanel>
     </>
